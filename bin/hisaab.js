@@ -136,6 +136,19 @@ async function main() {
     case 'serve': {
       const s = await startServer(h, { port: cfg.port });
       out(`Hisaab UI on ${s.url} (127.0.0.1 only) · ${h.network === 'main' ? 'MAINNET (watch-only)' : 'TESTNET'} · zkool ${cfg.zkoolUrl} · ${formatIst(new Date())}`);
+      // Background watcher: sync the watch-only account so invoices flip to "seen"/"paid" without a click.
+      // HISAAB_SYNC_SECS=0 turns it off. Runs never overlap; errors (e.g. not connected yet) are skipped quietly.
+      const every = Number(process.env.HISAAB_SYNC_SECS ?? 20);
+      if (every > 0) {
+        let busy = false;
+        setInterval(async () => {
+          if (busy) return;
+          busy = true;
+          try { await h.sync(); } catch { /* not connected yet, or zkool busy: try again next tick */ }
+          busy = false;
+        }, every * 1000);
+        out(`watching: sync every ${every}s (HISAAB_SYNC_SECS)`);
+      }
       return;
     }
     case undefined:
