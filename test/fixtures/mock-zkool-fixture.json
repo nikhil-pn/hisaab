@@ -1,0 +1,151 @@
+{
+  "_comment": "MOCK FIXTURE for tests and offline demo only. Not real chain data. Shapes mirror zkool_graphql (rust/src/graphql): amounts are BigDecimal decimal-ZEC strings with scale 8, time is chrono NaiveDateTime (UTC, no zone), pool 0 transparent / 1 sapling / 2 orchard / 3 ironwood, scope 0 external / 1 change.",
+  "apiVersion": "mock-1.0",
+  "tip": 3700200,
+  "payer": {
+    "name": "mock-payer",
+    "birth": 3600000,
+    "address": "utest1zqfae89s3mu7tqj8ttj6706c0kkkjrj6aj28fxgq6wcc0zl2erktluh7u7y5f7tkjm94j2zjmygdfdqfj7a60jct3q2fpyl7j8mndtrrn98kt28zxljhj6nuzugxslgql3yxtmvdpq2tu7zd0wzfkjayt54tkx9yqwwqz2xrkqgkdjt2hzzq3fvjxl2dp6v2wap5yewn39zskq6dmgh0n",
+    "ufvk": "uviewtest13tr9yyqm20p3hq7m5paq24fa6tmk77mxa8nts83ctx7jvy8v78jv2hm84c8svhram88yqn06uy0lxrt4vxxr9wwjlfjhq66taulwgrsmvh3k8zs7kl8zfvxvdy37pqh7v6xmfkgs68m4y8vef4ulpeqmhty4np0m2vrv8v3570wmw5w0px6lqyezs0ejksxnmultdwwd5l96zyzhpnjwtd5cecw9tytwwwhr8c4ygcs4yeyrq0sf2979gvmjq25r08hpytjw8eg9cljqg5l3rvpw"
+  },
+  "watch": {
+    "address": "utest1dmh60ztg9d6u4hphf7m8g4ss40l5umuvrhc4079c8ang4afrr5acnzz9txxzegq9cwsnn5s709gcff7ttraptqyc3kx5js8c03gyqgtt2ksy6ea66s75nuqv3zcl85zr83rpqrc2ux2u03n0c3yzy37pe9qpa9ra70rvleuvkvjpmhenxyphthyk9k33hc9ar6wwdchwndyu4v3jf5vvz",
+    "sapling": "ztestsapling1h87y9yl5r32x54dhraazkuadgw3j48tee7x0tnmukj33hedtn7u6e4a68n7avfmyxvrpswut964",
+    "exampleUfvk": "uviewtest1equ265xqaevzge4k9hpwmluxzsg6j0gh6rm9gtwcn8nhv77crt0f2ssjk87plum2sgvgfmdychum629d5yqn3x27z4qgskxztj22jrxecywdznae29alsym82ms2w4caw2z8m9xx59xewhukw68v60rr9q27vwea0zzcvh9ygzu4g2wya9f9sp3h0ww888d4rm5qpsh597fn0m8x6deglv0y8hat2mn9puxcwmh3cyxpjse5t7fl0f7rjh33xaxx5s6flkzjk0824ss9mzjk4ysp",
+    "exampleUivk": "uivktest1tp9ds9e4kks20j05uanf287f3w7zwwg3khczxx4lhmvrrretjyv25vsy0my6ecjlcw3784qkfrxfdudj8tydwqpkem763dyskx0kkvedaf090lka8ltjyz0t8kuxs9zthucvjczlwhxs4jlv5tzkj7nu6ka6aj7cl7exz5ql2xmtscqn5cw8"
+  },
+  "watchTransactions": [
+    {
+      "id": 1,
+      "txid": "6888b2f2389e183b70dbdcbc54ab55354cba7a6ce86ab37492906b52862e39af",
+      "height": 3650000,
+      "time": "2026-03-31T18:29:59",
+      "value": "0.00500000",
+      "fee": "0.00000000",
+      "notes": [
+        {
+          "pool": 3,
+          "value": "0.00500000",
+          "address": "utest1dmh60ztg9d6u4hphf7m8g4ss40l5umuvrhc4079c8ang4afrr5acnzz9txxzegq9cwsnn5s709gcff7ttraptqyc3kx5js8c03gyqgtt2ksy6ea66s75nuqv3zcl85zr83rpqrc2ux2u03n0c3yzy37pe9qpa9ra70rvleuvkvjpmhenxyphthyk9k33hc9ar6wwdchwndyu4v3jf5vvz",
+          "scope": 0,
+          "memo": "HSB-0AAAAA | last second of FY 2025-26 (IST)"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "txid": "5ebb8b4872d236d72731cccc415cee0c31823d355cdfd4a34519e45245005b4f",
+      "height": 3650001,
+      "time": "2026-03-31T18:30:00",
+      "value": "0.00700000",
+      "fee": "0.00000000",
+      "notes": [
+        {
+          "pool": 1,
+          "value": "0.00700000",
+          "address": "utest1dmh60ztg9d6u4hphf7m8g4ss40l5umuvrhc4079c8ang4afrr5acnzz9txxzegq9cwsnn5s709gcff7ttraptqyc3kx5js8c03gyqgtt2ksy6ea66s75nuqv3zcl85zr83rpqrc2ux2u03n0c3yzy37pe9qpa9ra70rvleuvkvjpmhenxyphthyk9k33hc9ar6wwdchwndyu4v3jf5vvz",
+          "scope": 0,
+          "memo": "=HYPERLINK(\"http://evil\") first second of FY 2026-27"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "txid": "2f9959b630055cab919b335f1ff477a39a8de449570e5f95ac010dbed4ee6f89",
+      "height": 3700100,
+      "time": "2026-10-20T10:00:00",
+      "value": "0.01000000",
+      "fee": "0.00000000",
+      "notes": [
+        {
+          "pool": 3,
+          "value": "0.01000000",
+          "address": "utest1dmh60ztg9d6u4hphf7m8g4ss40l5umuvrhc4079c8ang4afrr5acnzz9txxzegq9cwsnn5s709gcff7ttraptqyc3kx5js8c03gyqgtt2ksy6ea66s75nuqv3zcl85zr83rpqrc2ux2u03n0c3yzy37pe9qpa9ra70rvleuvkvjpmhenxyphthyk9k33hc9ar6wwdchwndyu4v3jf5vvz",
+          "scope": 0,
+          "memo": "HSB-7K2M9Q | Logo design"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "txid": "022201983c6ab62f2ad6932e145f4b22a28d96877ca5c6e2160cb7c4cfbf6535",
+      "height": 3700150,
+      "time": "2026-10-25T08:15:00",
+      "value": "0.00400000",
+      "fee": "0.00000000",
+      "notes": [
+        {
+          "pool": 3,
+          "value": "0.00400000",
+          "address": "utest1dmh60ztg9d6u4hphf7m8g4ss40l5umuvrhc4079c8ang4afrr5acnzz9txxzegq9cwsnn5s709gcff7ttraptqyc3kx5js8c03gyqgtt2ksy6ea66s75nuqv3zcl85zr83rpqrc2ux2u03n0c3yzy37pe9qpa9ra70rvleuvkvjpmhenxyphthyk9k33hc9ar6wwdchwndyu4v3jf5vvz",
+          "scope": 0,
+          "memo": "HSB-W3BS1T | Website, \"v2\""
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "txid": "e0ff4b09fadd0386cacacaa01d0241f95bac7ba92fec1da7281816694b9fab6f",
+      "height": 3700160,
+      "time": "2026-10-26T12:00:00",
+      "value": "-0.02010000",
+      "fee": "0.00010000",
+      "notes": [
+        {
+          "pool": 3,
+          "value": "0.00990000",
+          "address": "utest1dmh60ztg9d6u4hphf7m8g4ss40l5umuvrhc4079c8ang4afrr5acnzz9txxzegq9cwsnn5s709gcff7ttraptqyc3kx5js8c03gyqgtt2ksy6ea66s75nuqv3zcl85zr83rpqrc2ux2u03n0c3yzy37pe9qpa9ra70rvleuvkvjpmhenxyphthyk9k33hc9ar6wwdchwndyu4v3jf5vvz",
+          "scope": 1,
+          "memo": null
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "txid": "5eb6acb3607540f42649217b170e4374f5eb8b238cb22333682083ef8853166e",
+      "height": 3700199,
+      "time": "2026-11-02T09:00:00",
+      "value": "0.05000000",
+      "fee": "0.00000000",
+      "notes": [
+        {
+          "pool": 3,
+          "value": "0.03000000",
+          "address": "utest1dmh60ztg9d6u4hphf7m8g4ss40l5umuvrhc4079c8ang4afrr5acnzz9txxzegq9cwsnn5s709gcff7ttraptqyc3kx5js8c03gyqgtt2ksy6ea66s75nuqv3zcl85zr83rpqrc2ux2u03n0c3yzy37pe9qpa9ra70rvleuvkvjpmhenxyphthyk9k33hc9ar6wwdchwndyu4v3jf5vvz",
+          "scope": 0,
+          "memo": "HSB-0VERPD | Consulting"
+        },
+        {
+          "pool": 1,
+          "value": "0.02000000",
+          "address": "utest1dmh60ztg9d6u4hphf7m8g4ss40l5umuvrhc4079c8ang4afrr5acnzz9txxzegq9cwsnn5s709gcff7ttraptqyc3kx5js8c03gyqgtt2ksy6ea66s75nuqv3zcl85zr83rpqrc2ux2u03n0c3yzy37pe9qpa9ra70rvleuvkvjpmhenxyphthyk9k33hc9ar6wwdchwndyu4v3jf5vvz",
+          "scope": 0,
+          "memo": "HSB-0VERPD | Consulting"
+        }
+      ]
+    }
+  ],
+  "watchUnconfirmed": [
+    {
+      "txid": "6dd977b6f61dc001d85d8efd9c3fc9a2e73a7cb545962476f7b3b3e9f0123055",
+      "value": "0.02000000",
+      "notes": [
+        {
+          "pool": 3,
+          "scope": 0,
+          "value": "0.02000000",
+          "diversifier": "",
+          "address": null,
+          "memo": "HSB-SEEN01 | Mempool payment"
+        }
+      ]
+    }
+  ],
+  "mainnetExamples": {
+    "_comment": "MOCK strings with mainnet prefixes, for validation tests only (not real keys/addresses)",
+    "ufvk": "uview1swxxgw8u58yypf5sp20x6actgcy8xlh9xsszsunzk7mkvffvv9mvldhxlewpjcvw4jshcls2skmxzs5r85h4rc3sqd949r3xermpdxymgxyctdc6j94zfcd0dwl2vvjl0rddnnf6wzxcxzmyu03th8ggxthef0pv004jmuhyt9xws63sqclpusz2e0v96fmhcpseymc36e96f5af5qrc5yrtyqvsrseaw9h48977c4h63hrqyrd2k297h6apag3evhpl4tjua9e7st5tpdjk9vfp",
+    "uivk": "uivk16sdtj3enj99qjmmjxy8vk59tv9ygpq8udtmpkpzetyta3206qw85cy5n8psd9qdv0l9ymsjvmqhnk30m9rxlg77t3k3r92yea38jy7ae2puj4px6xxsz2s7ets2w8e96cfkl50z78s0n2qqg03lse35f67lvt6veh09a0x5s3e9cytpmnxj4",
+    "address": "u1xc3y0gth82yw6caa5d85xj3eq0k09f4z9630tmn2dqfptydn4gxyevt3cpwa62h60mjgaf4nst7zghqpa7wtxf57qxfapakqpurdwxfvzu5wlv9746zmedzxzp0wltup07vca5sq6nm8gnyueaqr362ntsazgvrf6eh6cj9c29jnnhwlv6hcz4n7p5ge7xs7zplh2s98tkjw62u23vmjj",
+    "sapling": "zs1yvtl72jf2xrcakyul75e2re4rr6qj2234ru9cvsq7vl32ws4yt002n8zvgsk82pya8fdvy2pscz"
+  }
+}
