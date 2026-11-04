@@ -75,7 +75,7 @@ async function main() {
     case 'invoice': {
       if (pos[1] === 'new') {
         const inv = await h.newInvoice({ amount: str(flags, 'amount') ?? '', description: str(flags, 'for') ?? str(flags, 'description') ?? '' });
-        out(`[${inv.mode}] invoice ${inv.code} for ${inv.amountZec} TAZ — ${inv.description}\nmemo: ${inv.memo}\npay:  ${inv.uri}`);
+        out(`[${inv.mode}] invoice ${inv.code} for ${inv.amountZec} ${h.network === 'main' ? 'ZEC' : 'TAZ'} — ${inv.description}\nmemo: ${inv.memo}\npay:  ${inv.uri}`);
         return;
       }
       if (pos[1] === 'list') {
@@ -84,7 +84,7 @@ async function main() {
         out(`[${mode}] ${invoices.length} invoice(s)`);
         for (const i of invoices) {
           const extra = i.txid ? ` ${i.paymentState} h=${i.height ?? '-'} recv=${zatsToZec(i.receivedZats)} ${i.explorer}` : '';
-          out(`${i.code}  ${i.amountZec.padStart(10)} TAZ  ${i.status.padEnd(9)} ${i.description}${extra}`);
+          out(`${i.code}  ${i.amountZec.padStart(10)} ${h.network === 'main' ? 'ZEC' : 'TAZ'}  ${i.status.padEnd(9)} ${i.description}${extra}`);
         }
         return;
       }

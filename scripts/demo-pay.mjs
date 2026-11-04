@@ -27,7 +27,7 @@ async function main() {
   if (!uri) throw new Error("usage: demo-pay.mjs 'zcash:utest1…?amount=…&memo=…'");
   const { address, amount, memo } = parseZip321(uri);
   if (!/^(utest1|ztestsapling)/.test(address)) throw new Error('refusing: not a testnet shielded address');
-  const wallets = JSON.parse(readFileSync(new URL('../data/demo-wallets.json', import.meta.url), 'utf8'));
+  const wallets = JSON.parse(readFileSync(process.env.HISAAB_DEMO_WALLETS || new URL('../data/demo-wallets.json', import.meta.url), 'utf8'));
   const id = wallets.payer.account;
   // Sync first, or a second pay in a row fails with "No feasible note selection found".
   const h = await gql('mutation($ids: [Int!]!) { synchronize(idAccounts: $ids) }', { ids: [id] });

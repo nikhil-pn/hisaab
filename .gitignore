@@ -4,3 +4,4 @@ out/
 *.db
 *.db-*
 node_modules/
+media/
