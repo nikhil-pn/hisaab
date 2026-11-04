@@ -8,7 +8,7 @@
 | **Privacy theme(s)** | 3. Privacy beyond the transaction (viewing-key export, verifiable receipts, invoices in encrypted memos), with a small leg of 1. Private payment rails (checkout matched by memo) |
 | **What it is** | CLI + local web UI + zero-dependency JavaScript library (`src/`) |
 | **Live URL** | N/A. It runs on `127.0.0.1` by design (it holds a viewing key). The video shows it running. |
-| **Demo video** | https://github.com/nikhil-pn/hisaab/blob/main/docs/hisaab-demo.mp4 |
+| **Demo video** | https://github.com/nikhil-pn/hisaab/blob/main/docs/hisaab-demo.mp4 (as submitted) · narrated version with subtitles: https://youtu.be/HapeoeNkGwM (added 5 Nov, after the deadline; same footage plus a text-to-speech voiceover) |
 | **Testnet txid** | `d78fd57ae683f7ac1055e4c6b8133db2e5350cce2306ae15a0ab8e5dd5ac4541` · https://testnet.zcashexplorer.app/transactions/d78fd57ae683f7ac1055e4c6b8133db2e5350cce2306ae15a0ab8e5dd5ac4541 (open in a browser; tonight zexplorer.app/testnet is indexed only to block 4,506,233, see FEEDBACK.md) |
 | **Team** | Nikhil P N (@nikhil-pn) |
 
@@ -181,7 +181,7 @@ This is an extra. Judging is on testnet and everything above is testnet. Testnet
 ## 8. Links
 
 - Repo: https://github.com/nikhil-pn/hisaab
-- Demo video: https://github.com/nikhil-pn/hisaab/blob/main/docs/hisaab-demo.mp4
+- Demo video: https://github.com/nikhil-pn/hisaab/blob/main/docs/hisaab-demo.mp4 (as submitted); narrated version: https://youtu.be/HapeoeNkGwM
 - Research and evidence: `docs/research-needed.md`; implementation notes: `docs/IMPLEMENTATION_NOTES.md`
 
 ## Feedback

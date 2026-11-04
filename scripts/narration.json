@@ -1,0 +1,15 @@
+{
+  "voice": "en-US-AndrewMultilingualNeural",
+  "rate": "-4%",
+  "parts": [
+    { "clip": "card-title.mp4", "text": "This is Hisaab. Private books for people who get paid in shielded Zcash." },
+    { "clip": "card-problem.mp4", "text": "In India, every crypto payment has to show up in your tax return. But tax tools can't read shielded transactions, and wallet exports leave out what your accountant needs." },
+    { "clip": "seg-a.mp4", "text": "Hisaab runs on your own machine. First, the freelancer connects an incoming-only viewing key. It can see money coming in, but it can't spend, and it can't see what you spend. Next, an invoice. The invoice code rides inside the encrypted memo of a Zcash payment link. Now the client pays from their own shielded wallet. This is a real transaction on the public testnet." },
+    { "clip": "seg-wait.mp4", "text": "Hisaab spots it in the mempool within seconds. We sped up the wait for the block." },
+    { "clip": "seg-b.mp4", "text": "Mined, and matched to the invoice. One payment can only settle one invoice. Here's the ledger for the Indian financial year, April to March. And one click builds a pack for your CA: the ledger, a receipt for every payment, and a checksum file." },
+    { "clip": "card-verify.mp4", "text": "Your CA checks it. Every file matches its checksum, every receipt matches the chain, and the wallet refused to spend with this key." },
+    { "clip": "card-chain.mp4", "text": "Here's the same payment from the client's own wallet. Block height, time, and fee." },
+    { "clip": "card-trust.mp4", "text": "On chain, amounts and memos stay private. Hisaab only ever holds a view-only key." },
+    { "clip": "card-end.mp4", "text": "Everything you just saw was real, on Zcash testnet. That's Hisaab. The code is on GitHub." }
+  ]
+}
