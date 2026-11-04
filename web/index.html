@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hisaab</title>
+<link rel="icon" href="data:,">
+<style>
+  :root {
+    --bg: #f7f6f2; --card: #ffffff; --ink: #1d1d1b; --muted: #6b6a64; --line: #e4e2da;
+    --accent: #1f6f5c; --accent-ink: #ffffff; --warn: #9a5b00; --bad: #a2302a; --good: #1f6f5c; --chip: #efede6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #151514; --card: #1e1e1c; --ink: #ecebe6; --muted: #a09e96; --line: #33322e; --accent: #4fb89c; --accent-ink: #0d1f1a; --warn: #e0a64a; --bad: #ef7d74; --good: #4fb89c; --chip: #2a2a27; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { padding: 20px 16px 8px; max-width: 980px; margin: 0 auto; }
+  h1 { margin: 0; font-size: 22px; letter-spacing: -0.01em; }
+  h1 small { font-weight: 400; color: var(--muted); }
+  h2 { font-size: 16px; margin: 0 0 12px; }
+  main { max-width: 980px; margin: 0 auto; padding: 8px 16px 48px; display: grid; gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .chip { background: var(--chip); border-radius: 999px; padding: 2px 10px; font-size: 13px; color: var(--muted); }
+  .chip b { color: var(--ink); font-weight: 600; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .06em; padding: 2px 8px; border-radius: 4px; }
+  .badge.REAL { background: var(--good); color: var(--accent-ink); }
+  .badge.MOCK { background: var(--warn); color: #fff; }
+  .badge.ERR { background: var(--bad); color: #fff; }
+  .netbadge { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .1em; padding: 3px 10px; border-radius: 4px; vertical-align: middle; margin-left: 6px; }
+  .netbadge.TESTNET { background: #6b6a64; color: #fff; }
+  .netbadge.MAINNET { background: #d98a00; color: #1d1d1b; }
+  label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 4px; }
+  input, select { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; width: 100%; min-width: 0; }
+  .field { flex: 1 1 160px; min-width: 0; }
+  button { font: inherit; font-weight: 600; border: 0; border-radius: 6px; padding: 9px 14px; background: var(--accent); color: var(--accent-ink); cursor: pointer; }
+  button.secondary { background: var(--chip); color: var(--ink); }
+  button:disabled { opacity: .5; cursor: progress; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px; word-break: break-all; }
+  .muted { color: var(--muted); }
+  .err { color: var(--bad); }
+  .ok { color: var(--good); }
+  .tablewrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  #ledgerTable { min-width: 680px; }
+  #invTable { min-width: 520px; }
+  td.memo { max-width: 260px; overflow-wrap: anywhere; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 12px; }
+  .totals div { background: var(--chip); border-radius: 8px; padding: 8px 10px; }
+  .totals b { display: block; font-size: 17px; font-variant-numeric: tabular-nums; }
+  .status { font-weight: 600; }
+  .status.paid, .status.confirmed { color: var(--good); }
+  .status.seen, .status.mined { color: var(--warn); }
+  .status.underpaid, .status.overpaid { color: var(--bad); }
+  .status.unpaid { color: var(--muted); }
+  .uri { background: var(--bg); border: 1px dashed var(--line); border-radius: 6px; padding: 8px; margin: 8px 0; }
+  a { color: var(--accent); }
+  details summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+  .hidden { display: none; }
+  ul.files { margin: 8px 0; padding-left: 18px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Hisaab <small>— private books for shielded ZEC</small></h1>
+  <div style="margin-top:6px"><span class="netbadge TESTNET" id="netBadge">TESTNET</span></div>
+  <div class="chips" id="statusChips"><span class="chip">loading…</span></div>
+</header>
+<main>
+  <section class="card" id="connectCard">
+    <h2>1 · Connect a viewing key</h2>
+    <p class="muted" style="margin-top:0">Paste a testnet viewing key. Best: an <b>incoming viewing key</b> (<span class="mono">uivktest1…</span>) — it sees only payments received. A <b>full viewing key</b> (<span class="mono">uviewtest1…</span>) also sees spends. Neither can spend. Seed phrases and spending keys are refused.</p>
+    <form id="connectForm" class="row" autocomplete="off">
+      <div class="field" style="flex-basis:100%"><label for="ufvk">Viewing key</label><input id="ufvk" class="mono" placeholder="uivktest1… or uviewtest1…" spellcheck="false" autocapitalize="off"></div>
+      <div class="field"><label for="birth">Birth height</label><input id="birth" inputmode="numeric" placeholder="e.g. 3700000"></div>
+      <div class="field"><label for="acctName">Account name</label><input id="acctName" placeholder="hisaab-watch"></div>
+      <div style="align-self:flex-end"><button type="submit">Connect</button></div>
+    </form>
+    <p id="connectMsg" class="muted"></p>
+  </section>
+
+  <section class="card">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">2 · New invoice</h2><button class="secondary" id="syncBtn" type="button">Sync now</button></div>
+    <p class="muted">The invoice code travels inside the encrypted memo. Only someone with your viewing key can read it.</p>
+    <form id="invoiceForm" class="row">
+      <div class="field"><label for="amount">Amount (<span class="coin">TAZ</span>)</label><input id="amount" inputmode="decimal" placeholder="0.01"></div>
+      <div class="field" style="flex-basis:260px"><label for="desc">For</label><input id="desc" placeholder="Logo design" maxlength="300"></div>
+      <div style="align-self:flex-end"><button type="submit">Create invoice</button></div>
+    </form>
+    <div id="newInvoice" class="hidden"></div>
+    <h2 style="margin-top:18px">Invoices</h2>
+    <div class="tablewrap"><table id="invTable"><thead><tr><th>Code</th><th>For</th><th class="num">Amount</th><th>Status</th><th>Payment</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="card">
+    <div class="row" style="justify-content:space-between">
+      <h2 style="margin:0">3 · Ledger</h2>
+      <div class="row"><label for="fy" style="margin:0">Indian FY</label><select id="fy" style="width:auto"></select>
+        <a id="csvLink" href="#">Download CSV</a></div>
+    </div>
+    <div class="totals" id="totals"></div>
+    <div class="tablewrap" style="margin-top:12px"><table id="ledgerTable"><thead><tr><th>Date (IST)</th><th>Type</th><th class="num">ZEC</th><th>Memo</th><th>Status</th><th>Tx</th></tr></thead><tbody></tbody></table></div>
+    <p id="pendingNote" class="muted"></p>
+  </section>
+
+  <section class="card">
+    <h2>4 · CA pack</h2>
+    <p class="muted" style="margin-top:0">One folder for your accountant: ledger, receipts, invoices, a read-only proof and a sha256 manifest.</p>
+    <button id="packBtn" type="button">Build CA pack</button>
+    <div id="packOut"></div>
+  </section>
+</main>
+<script>
+"use strict";
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const short = (t) => t ? t.slice(0, 8) + "…" + t.slice(-6) : "";
+const badge = (m) => `<span class="badge ${esc(m || "ERR")}">${esc(m || "OFFLINE")}</span>`;
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, { method: opts.method || "GET", headers: opts.body ? { "content-type": "application/json" } : {}, body: opts.body ? JSON.stringify(opts.body) : undefined });
+  const j = await res.json().catch(() => ({ error: "bad response" }));
+  if (!res.ok) throw new Error(j.error || res.statusText);
+  return j;
+}
+
+function currentFy() {
+  const ist = new Date(Date.now() + 5.5 * 3600e3);
+  const y = ist.getUTCMonth() >= 3 ? ist.getUTCFullYear() : ist.getUTCFullYear() - 1;
+  return y;
+}
+function fyLabel(y) { return `${y}-${String((y + 1) % 100).padStart(2, "0")}`; }
+(function initFy() {
+  const y = currentFy(); const sel = $("#fy");
+  for (let k = y; k >= y - 3; k--) sel.insertAdjacentHTML("beforeend", `<option value="${fyLabel(k)}">${fyLabel(k)}</option>`);
+  sel.addEventListener("change", () => { loadLedger(); });
+})();
+
+let connected = false;
+async function loadStatus() {
+  try {
+    const s = await api("/api/status");
+    connected = s.connected;
+    if (s.network) $("#ufvk").placeholder = s.network === "main" ? "uivk1… or uview1…" : "uivktest1… or uviewtest1…";
+    if (s.coin) document.querySelectorAll(".coin").forEach((e) => { e.textContent = s.coin; });
+    if (s.networkLabel) { const nb = $("#netBadge"); nb.textContent = s.networkLabel; nb.className = `netbadge ${s.networkLabel}`; document.title = s.networkLabel === "MAINNET" ? "Hisaab · MAINNET" : "Hisaab"; }
+    const chips = [badge(s.ok ? s.mode : null)];
+    if (s.ok) chips.push(`<span class="chip">zkool tip <b>${esc(s.zkoolHeight)}</b></span>`);
+    else chips.push(`<span class="chip err">zkool: ${esc(s.error)}</span>`);
+    if (s.account) chips.push(`<span class="chip">synced <b>${esc(s.syncedHeight ?? "?")}</b></span>`, `<span class="chip">account <b>#${esc(s.account.id)} ${esc(s.account.name)}</b></span>`, `<span class="chip">key <b>${esc(s.account.keyKind === "incoming-only" ? "incoming-only (UIVK)" : "full (UFVK)")}</b></span>`);
+    else chips.push(`<span class="chip">no viewing key connected</span>`);
+    chips.push(`<span class="chip">paid after <b>${esc(s.confirmations)}</b> conf</span>`);
+    if (s.warning) chips.push(`<span class="chip err">${esc(s.warning)}</span>`);
+    $("#statusChips").innerHTML = chips.join("");
+    $("#connectCard").open = !connected;
+    if (connected) $("#connectMsg").textContent = `Connected: account #${s.account.id} "${s.account.name}", birth ${s.account.birth}.`;
+  } catch (e) {
+    $("#statusChips").innerHTML = badge(null) + `<span class="chip err">${esc(e.message)}</span>`;
+  }
+}
+
+$("#connectForm").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const btn = ev.submitter; btn.disabled = true; $("#connectMsg").className = "muted"; $("#connectMsg").textContent = "Connecting…";
+  try {
+    const r = await api("/api/connect", { method: "POST", body: { key: $("#ufvk").value.trim(), birth: $("#birth").value.trim(), name: $("#acctName").value.trim() || undefined } });
+    $("#ufvk").value = "";
+    $("#connectMsg").className = "ok";
+    $("#connectMsg").textContent = `${r.created ? "Created" : "Reusing"} watch-only account #${r.accountId} "${r.name}" (birth ${r.birth}, ${r.keyKind} key) [${r.mode}]. Now press Sync.`;
+    await refreshAll();
+  } catch (e) { $("#connectMsg").className = "err"; $("#connectMsg").textContent = e.message; }
+  btn.disabled = false;
+});
+
+$("#syncBtn").addEventListener("click", async (ev) => {
+  const btn = ev.currentTarget; btn.disabled = true; btn.textContent = "Syncing…";
+  try { await api("/api/sync", { method: "POST" }); await refreshAll(); }
+  catch (e) { alert(e.message); }
+  btn.disabled = false; btn.textContent = "Sync now";
+});
+
+function payCell(i) {
+  if (!i.txid) return '<span class="muted">waiting for payment</span>';
+  const where = i.height ? `at height ${esc(i.height)}` : "in mempool";
+  return `${esc(i.paymentState)} ${where} · received ${esc(i.receivedZats / 1e8)} · <a href="${esc(i.explorer)}" target="_blank" rel="noopener noreferrer">${esc(short(i.txid))}</a>`;
+}
+function statusText(i) {
+  return { unpaid: "unpaid", seen: i.height ? "mined, confirming" : "seen in mempool", paid: `paid at height ${i.height}`, underpaid: "underpaid", overpaid: "overpaid" }[i.status] || i.status;
+}
+
+$("#invoiceForm").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const btn = ev.submitter; btn.disabled = true;
+  const box = $("#newInvoice");
+  try {
+    const inv = await api("/api/invoices", { method: "POST", body: { amount: $("#amount").value.trim(), description: $("#desc").value.trim() } });
+    box.className = "";
+    box.innerHTML = `<div class="uri"><div class="row" style="justify-content:space-between"><b>${esc(inv.code)}</b> ${badge(inv.mode)}</div>
+      <div class="muted" style="margin:4px 0">Pay ${esc(inv.amountZec)} ${inv.networkLabel === "MAINNET" ? "ZEC" : "TAZ"} · memo <span class="mono">${esc(inv.memo)}</span></div>
+      <div class="mono" id="uriText">${esc(inv.uri)}</div>
+      <div class="row" style="margin-top:8px"><button type="button" id="copyBtn">Copy zcash: link</button><a href="${esc(inv.uri)}">Open in wallet</a></div></div>`;
+    $("#copyBtn").addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(inv.uri); $("#copyBtn").textContent = "Copied"; }
+      catch { const r = document.createRange(); r.selectNodeContents($("#uriText")); getSelection().removeAllRanges(); getSelection().addRange(r); $("#copyBtn").textContent = "Selected — press Ctrl+C"; }
+    });
+    $("#desc").value = "";
+    await loadInvoices();
+  } catch (e) { box.className = "err"; box.textContent = e.message; }
+  btn.disabled = false;
+});
+
+async function loadInvoices() {
+  const tb = $("#invTable tbody");
+  if (!connected) { tb.innerHTML = '<tr><td colspan="5" class="muted">Connect a viewing key first.</td></tr>'; return; }
+  try {
+    const { invoices } = await api("/api/invoices");
+    tb.innerHTML = invoices.length ? invoices.slice().reverse().map((i) => `<tr><td class="mono">${esc(i.code)}</td><td>${esc(i.description)}</td><td class="num">${esc(i.amountZec)}</td><td class="status ${esc(i.status)}">${esc(statusText(i))}</td><td>${payCell(i)}</td></tr>`).join("")
+      : '<tr><td colspan="5" class="muted">No invoices yet.</td></tr>';
+  } catch (e) { tb.innerHTML = `<tr><td colspan="5" class="err">${esc(e.message)}</td></tr>`; }
+}
+
+async function loadLedger() {
+  const fy = $("#fy").value;
+  $("#csvLink").href = `/api/pack/download?fy=${encodeURIComponent(fy)}`;
+  const tb = $("#ledgerTable tbody");
+  if (!connected) { tb.innerHTML = '<tr><td colspan="6" class="muted">Connect a viewing key first.</td></tr>'; $("#totals").innerHTML = ""; return; }
+  try {
+    const l = await api(`/api/ledger?fy=${encodeURIComponent(fy)}`);
+    const t = l.totals;
+    $("#totals").innerHTML = `<div>${badge(l.mode)}<span class="muted"> FY ${esc(l.fy)}</span></div>
+      <div><span class="muted">Received</span><b>${esc(t.received)}</b><span class="muted">${esc(t.countIn)} payment(s)</span></div>
+      ${t.note ? `<div style="grid-column:span 2"><span class="muted">Sent / fees</span><b style="font-size:14px">${esc(t.note)}</b></div>` : `
+      <div><span class="muted">Sent</span><b>${esc(t.sent)}</b><span class="muted">${esc(t.countOut)} tx</span></div>
+      <div><span class="muted">Fees</span><b>${esc(t.fees)}</b></div>
+      <div><span class="muted">Net</span><b>${esc(t.net)}</b></div>`}`;
+    tb.innerHTML = l.rows.length ? l.rows.slice().reverse().map((r) => `<tr>
+        <td style="white-space:nowrap">${esc(r.timeIst)}</td>
+        <td>${r.kind === "in" ? "received" : r.kind === "out" ? "sent" : "self"}${l.invoiceByTxid[r.txid] ? `<br><span class="mono muted">${esc(l.invoiceByTxid[r.txid])}</span>` : ""}</td>
+        <td class="num">${esc(r.amountZec)}${r.kind === "out" ? `<br><span class="muted">fee ${esc(r.feeZec)}</span>` : ""}</td>
+        <td class="memo">${esc(r.memo)}<br><span class="muted">${esc(r.pool)}</span></td>
+        <td class="status ${esc(r.status)}">${esc(r.status)}<br><span class="muted">h ${esc(r.height)} · ${esc(r.confirmations)} conf</span></td>
+        <td><a class="mono" href="${esc(r.explorer)}" target="_blank" rel="noopener noreferrer">${esc(short(r.txid))}</a></td></tr>`).join("")
+      : '<tr><td colspan="6" class="muted">No transactions in this financial year.</td></tr>';
+    $("#pendingNote").textContent = l.pending.length ? `${l.pending.length} payment(s) seen in the mempool, not yet mined (not in totals).` : "";
+  } catch (e) { tb.innerHTML = `<tr><td colspan="6" class="err">${esc(e.message)}</td></tr>`; }
+}
+
+$("#packBtn").addEventListener("click", async (ev) => {
+  const btn = ev.currentTarget; btn.disabled = true; btn.textContent = "Building…";
+  const out = $("#packOut");
+  try {
+    const r = await api(`/api/pack?fy=${encodeURIComponent($("#fy").value)}`, { method: "POST" });
+    const proofOk = r.readonlyProof.result === "refused";
+    out.innerHTML = `<p>${badge(r.mode)} Written to <span class="mono">${esc(r.path)}</span></p>
+      <ul class="files mono">${r.files.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>
+      <p>MANIFEST.sha256 hash: <span class="mono">${esc(r.manifestSha256)}</span></p>
+      <p class="${proofOk ? "ok" : "err"}">Read-only proof: wallet ${proofOk ? "refused to spend" : esc(r.readonlyProof.result)} — <span class="mono">"${esc(r.readonlyProof.error)}"</span> at ${esc(r.readonlyProof.attemptedAt)}</p>`;
+  } catch (e) { out.innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+  btn.disabled = false; btn.textContent = "Build CA pack";
+});
+
+async function refreshAll() { await loadStatus(); await Promise.all([loadInvoices(), loadLedger()]); }
+refreshAll();
+setInterval(() => { if (document.visibilityState === "visible") refreshAll(); }, 15000);
+</script>
+</body>
+</html>
