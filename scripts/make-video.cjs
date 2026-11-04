@@ -20,13 +20,13 @@ const ff = (args) => execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error
 
 const css = `body{margin:0;width:${W}px;height:${H}px;display:flex;align-items:center;justify-content:center;background:#f6f4ef;color:#1d2321;font-family:'Noto Sans','DejaVu Sans',sans-serif}
 .c{max-width:1000px;padding:40px} h1{font-size:64px;margin:0 0 12px} h2{font-size:40px;margin:0 0 20px} p{font-size:28px;line-height:1.45;margin:10px 0;color:#3b4542}
-.k{font-size:20px;letter-spacing:.12em;text-transform:uppercase;color:#1f6f5c;font-weight:700} q{font-style:italic} small{font-size:20px;color:#6b7572}
+.k{font-size:20px;letter-spacing:.12em;text-transform:uppercase;color:#1f6f5c;font-weight:700} q{font-style:italic} small{font-size:20px;color:#6b7572;word-break:break-all}
 pre{font:17px/1.45 'DejaVu Sans Mono',monospace;background:#1d2321;color:#e8efe9;padding:18px 22px;border-radius:10px;white-space:pre-wrap;max-height:560px;overflow:hidden}`;
 const cards = {
   title: `<div class="c"><div class="k">Zcash Free Society Hack · Privacy track</div><h1>Hisaab</h1><h2>Private books for shielded ZEC</h2>
     <p>Invoices travel in encrypted memos. Payments are matched with a view-only key. At year end your CA gets an incoming-only ledger for the Indian financial year, not your wallet.</p></div>`,
   problem: `<div class="c"><div class="k">The problem</div><h2>Tax season doesn't care that your chain is private</h2>
-    <p>Freelancers and shops in India paid in shielded ZEC must report every transfer in Schedule VDA. Mainstream crypto-tax tools can't see shielded transactions, and wallet exports drop txids and memos.</p>
+    <p>Freelancers and shops in India paid in shielded ZEC must report every transfer in Schedule VDA. CoinTracker and Koinly can't read shielded transactions, and the Zodl tax export has no txids or memos.</p>
     <p><q>The bookkeeper needs records and the auditor needs proof… I can't find much evidence that anyone uses them this way.</q></p>
     <small>Zcash Community Forum, "Is anyone actually using viewing keys for business accounting?", Jun 2026</small></div>`,
   verify: fs.existsSync(path.join(RAW, 'verify.txt')) ? `<div class="c" style="max-width:1150px"><div class="k">6. The CA checks the pack (real output)</div>
@@ -39,7 +39,7 @@ const cards = {
     <p><b>Light-wallet server</b> (testnet.zec.rocks) sees the watcher's IP and sync timing. Next: route it over Nym.</p>
     <p><b>The CA</b> sees income only: an incoming viewing key can't see spends and can't spend.</p></div>`,
   end: `<div class="c"><div class="k">Everything in this video was real</div><h2>Public Zcash testnet · NU7 · Ironwood pool</h2>
-    <p>Testnet tx <b>${marks.txid ? marks.txid.slice(0, 20) + '…' : ''}</b><br><small>https://zexplorer.app/testnet/tx/${marks.txid || ''}</small></p>
+    <p>Testnet tx <b>${marks.txid ? marks.txid.slice(0, 20) + '…' : ''}</b><br><small>https://testnet.zcashexplorer.app/transactions/${marks.txid || ''}</small></p>
     <p>One wait was sped up, and labelled. TAZ has no value.</p>
     <p><b>github.com/nikhil-pn/hisaab</b> · zero-dependency Node library + CLI + local UI</p></div>`,
 };

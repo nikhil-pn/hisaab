@@ -35,7 +35,7 @@ async function main() {
   const d = await gql('mutation($id: Int!, $p: Payment!) { pay(idAccount: $id, payment: $p) }', {
     id, p: { recipients: [{ address, amount, memo }], confirmations: 1 },
   });
-  console.log(JSON.stringify({ txid: d.pay, explorer: `https://zexplorer.app/testnet/tx/${d.pay}`, amount, memo }));
+  console.log(JSON.stringify({ txid: d.pay, explorer: `https://testnet.zcashexplorer.app/transactions/${d.pay}`, amount, memo }));
 }
 
 main().catch((e) => { console.error(e.message); process.exit(1); });

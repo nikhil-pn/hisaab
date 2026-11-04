@@ -76,7 +76,7 @@ test('ledger rows: scope-0 notes in, change skipped, outgoing net + fee, mempool
   assert.equal(ins.filter((r) => r.status === 'seen').length, 1);
   const logo = ins.find((r) => r.memo.includes('HSB-7K2M9Q'));
   assert.equal(logo.pool, 'ironwood');
-  assert.equal(logo.explorer, `https://zexplorer.app/testnet/tx/${logo.txid}`);
+  assert.equal(logo.explorer, `https://testnet.zcashexplorer.app/transactions/${logo.txid}`);
   assert.equal(logo.timeIst, '2026-10-20 15:30:00 IST');
   assert.equal(logo.confirmations, 101);
   const t = totals(filterFy(rows, '2026-27'));
@@ -315,9 +315,9 @@ test('address prefix matrix per network (invoices)', () => {
 });
 
 test('explorer templates per network, network table', () => {
-  assert.equal(EXPLORER_TX.test, 'https://zexplorer.app/testnet/tx/{txid}');
+  assert.equal(EXPLORER_TX.test, 'https://testnet.zcashexplorer.app/transactions/{txid}');
   assert.equal(EXPLORER_TX.main, 'https://zexplorer.app/tx/{txid}');
-  assert.equal(explorerTx('ab', 'test'), 'https://zexplorer.app/testnet/tx/ab');
+  assert.equal(explorerTx('ab', 'test'), 'https://testnet.zcashexplorer.app/transactions/ab');
   assert.equal(explorerTx('ab', 'main'), 'https://zexplorer.app/tx/ab');
   const rows = buildRows(fx.watchTransactions.slice(2, 3), { tip: 3700200, network: 'main' });
   assert.equal(rows[0].explorer, `https://zexplorer.app/tx/${fx.watchTransactions[2].txid}`);

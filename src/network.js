@@ -3,7 +3,8 @@
 
 /** Explorer URL templates, one place to fix them. `{txid}` is replaced. */
 export const EXPLORER_TX = {
-  test: 'https://zexplorer.app/testnet/tx/{txid}',
+  // zexplorer.app/testnet was ~76k blocks behind on 4 Nov 2026 (see FEEDBACK.md); this one indexes testnet live.
+  test: 'https://testnet.zcashexplorer.app/transactions/{txid}',
   main: 'https://zexplorer.app/tx/{txid}',
 };
 

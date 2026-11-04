@@ -125,7 +125,7 @@ ${main ? 'Any INR column is the CoinGecko ZEC/INR reference rate on the transact
 ## How to check it yourself
 
 1. **Integrity:** \`sha256sum -c MANIFEST.sha256\` — every line must say OK.
-2. **Existence:** open the explorer link in any row (zexplorer.app). It proves the transaction
+2. **Existence:** open the explorer link in any row (testnet.zcashexplorer.app on testnet, zexplorer.app on mainnet). It proves the transaction
    exists, its block height, block time and fee. It does **not** show amount or memo — those are encrypted.
 3. **Amount and memo:** ask your client for the **viewing key** (\`${n.viewingKeys.incoming}…\` or \`${n.viewingKeys.full}…\`${c.birth ? `, birth height ${c.birth}` : ''}).
    ${c.ufvkHint ? `(This pack was made from the key ${c.ufvkHint}.) ` : ''}Import it as a watch-only account in any
@@ -144,8 +144,10 @@ ${main ? 'Any INR column is the CoinGecko ZEC/INR reference rate on the transact
 
 ## Indian tax context (not advice)
 
-Income from virtual digital assets is taxed under section 115BBH (30%), with TDS under 194S, and is
-reported in Schedule VDA of the ITR. Use this ledger as supporting evidence; the classification is yours.
+Under the Income-tax Act 1961, gains on virtual digital assets were taxed at 30% (section 115BBH) with
+1% TDS (section 194S), reported transaction by transaction in Schedule VDA of the ITR. The Income-tax
+Act 2025 (in force from 1 Apr 2026) renumbers these sections: confirm the current references. Use this
+ledger as supporting evidence; the classification (income, gain, or neither) is yours.
 `;
 }
 

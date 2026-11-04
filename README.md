@@ -30,7 +30,7 @@
 - [ZecLedger](https://github.com/vancube2/zecledger) is a read-only CLI plus dashboard with balances, tx history, cost-basis reports and payment reconciliation. It was rejected for a retroactive grant in Sep 2026 (see the [forum thread](https://forum.zcashcommunity.com/t/retroactive-grant-zecledger/56969)); we have not run it.
 - [ZecBooks / SaneBooks](https://github.com/sane-apps/SaneBooks) (v0.1.1) is a macOS app that classifies rows and exports CSV/PDF and an encrypted expiring proof pack; fiat values are user-supplied.
 
-From their descriptions, neither matches payments to invoice codes in the memo, uses the Indian financial year, or gives the accountant a verifiable receipt for a single payment. Hisaab does those three things, and the CA's check needs no key. It is a small tool; it does not replace tax software.
+From their descriptions, neither matches payments to invoice codes in the memo, uses the Indian financial year, or gives the accountant a verifiable receipt for a single payment. Hisaab does those three things. The CA can check the pack's integrity with `sha256sum -c` alone, and re-check each receipt against the chain with the viewing key. It is a small tool; it does not replace tax software.
 
 ## 2. What it does
 
@@ -42,11 +42,12 @@ Screenshots: see the demo video (https://github.com/nikhil-pn/hisaab/blob/main/d
 
 **Requirements:** Node 24 (tested on 24.14.1; the system `node` on some machines is older). No `npm install`: there are zero dependencies. For the real-chain path you also need the Rust toolchain to build `zkool_graphql` (about 30 minutes the first time; or use a prebuilt binary from the zkool2 releases page if one exists for your OS).
 
-**Option A: no chain at all (MOCK).** This uses a mock GraphQL server and fake data. It shows the UI and the invoice-to-paid loop but proves nothing about Zcash. The UI shows a MOCK badge.
+**Option A: no chain at all (MOCK).** This uses a mock GraphQL server and fake data. It shows the UI with a fixture ledger, and `npm test` runs the invoice-to-paid loop against the mock. It proves nothing about Zcash. The UI shows a MOCK badge.
 
 ```bash
-git clone https://github.com/nikhil-pn/hisaab && cd hisaab
+git clone https://github.com/nikhil-pn/hisaab && cd hisaab   # Node 24, no npm install needed
 node test/mock-zkool.js 8002 &     # prints example FAKE keys; MOCK, not a chain
+node bin/hisaab.js connect --key <the FAKE UIVK the mock printed> --birth 3700000
 node bin/hisaab.js serve           # http://127.0.0.1:4040/
 npm test                           # 28 tests, all against the mock
 ```
@@ -54,22 +55,26 @@ npm test                           # 28 tests, all against the mock
 **Option B: real Zcash testnet.**
 
 ```bash
-# 1. Build the wallet server (once)
+# 1. Build the wallet server (once). zkool2 releases also ship a prebuilt zkool_graphql binary.
+#    Most of the build is fetching git dependencies; see FEEDBACK.md for a 2-minute shallow-fetch shortcut.
 git clone https://github.com/hhanh00/zkool2 && cd zkool2/rust
-cargo build --release --features graphql --bin zkool_graphql
-cd ../..                           # back in the hisaab repo
+cargo build --release --features graphql --bin zkool_graphql   # 'cargo +stable build …' skips the pinned-toolchain download
+cd ../..                           # back in the hisaab repo (zkool2/ now sits inside it)
 
 # 2. Start two local zkool servers, both on 127.0.0.1:
 #    :8001 demo payer + demo freelancer wallets (hold seeds, never expose)
 #    :8002 Hisaab's watch-only account
-ZKOOL_BIN=../zkool2/target/release/zkool_graphql scripts/zkool-up.sh all
+ZKOOL_BIN=zkool2/target/release/zkool_graphql scripts/zkool-up.sh all
 
-# 3. Create the two demo wallets (prints addresses and the freelancer's public keys only)
+# 3. Create the two demo wallets. Writes addresses, the freelancer's UIVK and birth height to
+#    data/demo-wallets.json (mode 600). Seeds stay inside zkool's database and are never printed.
 node scripts/demo-wallets.mjs --faucet     # fund the payer from a testnet faucet (https://fauzec.com or https://faucet.testnet.valargroup.dev/)
 
 # 4. Connect the watch-only account with the freelancer's incoming-only key
 cp .env.example .env
-node bin/hisaab.js connect --key uivktest1... --birth <height>   # values from step 3 / data/demo-wallets.json
+UIVK=$(node -p "require('./data/demo-wallets.json').freelancer.uivk")
+BIRTH=$(node -p "require('./data/demo-wallets.json').freelancer.birth")
+node bin/hisaab.js connect --key "$UIVK" --birth "$BIRTH" 
 node bin/hisaab.js sync
 
 # 5. Invoice, pay, watch, pack, verify
@@ -114,7 +119,7 @@ node bin/hisaab.js serve                                            # or use the
 1. **What stays private?** On-chain, sender, receiver and amount are shielded and the memo is encrypted. Hisaab never holds a spending key: it connects with a `uivktest1…` incoming-only key (a full `uviewtest1…` key is accepted, but the UIVK is the narrowest), refuses seed phrases and spending keys, and the pack records that zkool refuses a `pay` attempt ("This account sees incoming payments only; it cannot spend").
 2. **What does the app reveal, and to whom?**
    - The light-wallet server (`testnet.zec.rocks`) sees the watcher's IP address and sync timing.
-   - Hisaab stores invoice codes, descriptions, txids, amounts and memos locally in `data/` (directory 700, files 600), and nothing else. No phone number or email is collected or stored.
+   - Hisaab stores the viewing key (`data/config.json`, plaintext) plus invoice codes, descriptions, txids, amounts and memos locally in `data/` (directory 700, files 600), and nothing else. No phone number or email is collected or stored.
    - The optional INR column (only with `--inr`) calls CoinGecko, which sees our IP address and the dates queried. It is off by default.
    - No LLM or other model provider is in the loop.
    - The CA who receives the pack sees the whole ledger, including memos and descriptions.
@@ -171,7 +176,7 @@ node bin/hisaab.js serve                                            # or use the
 
 This is an extra. Judging is on testnet and everything above is testnet. Testnet TAZ has no value, and we do not claim otherwise.
 
-`HISAAB_NETWORK=main` switches the key prefixes (`uivk1…`, `uview1…`) and address prefixes (`u1`, `zs1`). Mainnet is watch-only by design: no code path calls `pay` on mainnet, and the UI, ledger, receipts and pack are labelled MAINNET. A mainnet watcher and a mainnet invoice (`HSB-E6FVT8`, 0.002 ZEC) are running; a real mainnet payment, once made, will be listed here: MAINNET_TXID_PENDING.
+`HISAAB_NETWORK=main` switches the key prefixes (`uivk1…`, `uview1…`) and address prefixes (`u1`, `zs1`). Mainnet is watch-only by design: no code path calls `pay` on mainnet, and the UI, ledger, receipts and pack are labelled MAINNET. We ran a mainnet watcher with an incoming-only key and issued a mainnet invoice (`HSB-E6FVT8`, 0.002 ZEC). No mainnet payment has been made to it yet; if one is, its txid will be added here.
 
 ## 8. Links
 

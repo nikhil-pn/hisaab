@@ -7,7 +7,7 @@ import { explorerTx } from './network.js';
 
 export const POOLS = /** @type {const} */ (['transparent', 'sapling', 'orchard', 'ironwood']);
 /** @deprecated testnet prefix only; use explorerLink(txid, network) / EXPLORER_TX in network.js */
-export const EXPLORER = 'https://zexplorer.app/testnet/tx/';
+export const EXPLORER = 'https://testnet.zcashexplorer.app/transactions/';
 const IST_OFFSET_MS = 5.5 * 3600 * 1000;
 
 /** @param {string} txid @param {'test'|'main'} [net] */
