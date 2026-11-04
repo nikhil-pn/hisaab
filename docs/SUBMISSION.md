@@ -19,7 +19,7 @@ Privacy
 
 ## Description (about 150 words)
 ```
-Hisaab is private bookkeeping for Indian freelancers and small shops paid in shielded ZEC, and for their CA. You create an invoice and get a zcash: payment link whose memo carries an invoice code. The client pays from any shielded wallet. A watch-only zkool_graphql account, built from an incoming viewing key (no spending key), sees the payment in the mempool, reads the memo, and marks the invoice paid after one confirmation. Each txid is matched once. At year end, "hisaab pack" writes a folder for the Indian financial year (1 Apr to 31 Mar): ledger.csv and ledger.json, one receipt per payment, invoices.csv, a read-only proof (a pay attempt fails with "No Signing Key"), a sha256 manifest and a README for the CA. The CA runs "hisaab verify" on any receipt. The CA gets an incoming-only ledger, not the wallet. It is a Node 24 CLI and local web UI with zero dependencies; src/ is an importable library. Tested on Zcash testnet.
+Hisaab is private bookkeeping for Indian freelancers and small shops paid in shielded ZEC, and for their CA. You create an invoice and get a zcash: payment link whose memo carries an invoice code. The client pays from any shielded wallet. A watch-only zkool_graphql account, built from an incoming viewing key (no spending key), sees the payment in the mempool, reads the memo, and marks the invoice paid after one confirmation. Each txid is matched once. At year end, "hisaab pack" writes a folder for the Indian financial year (1 Apr to 31 Mar): ledger.csv and ledger.json, one receipt per payment, invoices.csv, a read-only proof (zkool refuses a pay attempt: "This account sees incoming payments only; it cannot spend"), a sha256 manifest and a README for the CA. The CA runs "hisaab verify" on any receipt. The CA gets an incoming-only ledger, not the wallet. It is a Node 24 CLI and local web UI with zero dependencies; src/ is an importable library. Tested on Zcash testnet.
 ```
 
 ## Repo URL
@@ -29,14 +29,14 @@ https://github.com/nikhil-pn/hisaab
 
 ## Testnet transaction ID
 ```
-{{TESTNET_TXID}}
+d78fd57ae683f7ac1055e4c6b8133db2e5350cce2306ae15a0ab8e5dd5ac4541
 ```
-Explorer: {{TESTNET_EXPLORER}}
+Explorer: https://testnet.zcashexplorer.app/transactions/d78fd57ae683f7ac1055e4c6b8133db2e5350cce2306ae15a0ab8e5dd5ac4541 (open in a browser; tonight zexplorer.app/testnet is indexed only to block 4,506,233, see FEEDBACK.md)
 
 ## Viewing key and birth height (optional)
 ```
-Viewing key: {{UIVK}}
-Birth height: {{BIRTH}}
+Viewing key: uivktest1hnjpqcxfupge0m0586svtg38spsyfqy5le7500lg8y8r67z5j6rr9juczs84a6cdprcrg9kyeljrvys5aqk4s7a3m20xxv9nqg2yflpqmm3cqkl2flm56peafpn3znq4vnfuyqqrwqhsdpnm4f6pgkgdazjdrk8ut2d9tzc7zzp7kgzqmr47fwcqkv7ffd832e7cr2ttr3jdzqeupw72szq8clf7ltazm2af5d2s9elj74npq46t9h9w57wgtlaug0q8642r78d3cg4300vuxkus6u7zfqx8wud4vdw2gvwnxrdfut2wzfg5wsmw6h3t3mlr5maty3gfja80fjlpwqfaardzsk
+Birth height: 4582613
 Demo freelancer wallet on testnet. Incoming-only key (UIVK): shows the amount and memo of received payments, cannot spend.
 ```
 
@@ -47,7 +47,7 @@ none — local CLI + web UI; see video
 
 ## Privacy and trust note
 ```
-1. What stays private: on-chain, sender, receiver and amount are shielded and the memo is encrypted. Hisaab never holds a spending key. It connects with an incoming-only viewing key (UIVK), refuses seed phrases and spending keys, and the CA pack records that a pay attempt fails with "No Signing Key".
+1. What stays private: on-chain, sender, receiver and amount are shielded and the memo is encrypted. Hisaab never holds a spending key. It connects with an incoming-only viewing key (UIVK), refuses seed phrases and spending keys, and the CA pack records that zkool refuses a pay attempt ("This account sees incoming payments only; it cannot spend").
 2. What the app reveals, to whom:
    - the light-wallet server (testnet.zec.rocks) sees the watcher's IP and sync timing
    - Hisaab stores invoice codes, descriptions, txids, amounts and memos locally in data/ (directory 700, files 600), and nothing else; no phone number or email is collected or stored
@@ -65,12 +65,12 @@ none — local CLI + web UI; see video
 - Schedule-VDA-shaped INR export with cost basis, as a CSV a CA can paste from.
 - Pilot with one CA in Kochi or Mumbai (not started; nobody has agreed yet).
 - Nym transport for the watcher and per-FY narrower disclosure.
-- Upstream issue to zkool2 on the build and run friction in FEEDBACK.md: {{UPSTREAM_ISSUE}}
+- Upstream issue to zkool2 on the build and run friction in FEEDBACK.md: drafted in docs/upstream-zkool2-issue.md (to be filed on hhanh00/zkool2)
 ```
 
 ## Demo video
 ```
-{{VIDEO_URL}}
+https://github.com/nikhil-pn/hisaab/blob/main/docs/hisaab-demo.mp4
 ```
 
 ## Friction notes (paste of FEEDBACK.md, with area tags)

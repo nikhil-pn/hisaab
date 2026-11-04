@@ -8,8 +8,8 @@
 | **Privacy theme(s)** | 3. Privacy beyond the transaction (viewing-key export, verifiable receipts, invoices in encrypted memos), with a small leg of 1. Private payment rails (checkout matched by memo) |
 | **What it is** | CLI + local web UI + zero-dependency JavaScript library (`src/`) |
 | **Live URL** | N/A. It runs on `127.0.0.1` by design (it holds a viewing key). The video shows it running. |
-| **Demo video** | {{VIDEO_URL}} |
-| **Testnet txid** | `{{TESTNET_TXID}}` · {{TESTNET_EXPLORER}} |
+| **Demo video** | https://github.com/nikhil-pn/hisaab/blob/main/docs/hisaab-demo.mp4 |
+| **Testnet txid** | `d78fd57ae683f7ac1055e4c6b8133db2e5350cce2306ae15a0ab8e5dd5ac4541` · https://testnet.zcashexplorer.app/transactions/d78fd57ae683f7ac1055e4c6b8133db2e5350cce2306ae15a0ab8e5dd5ac4541 (open in a browser; tonight zexplorer.app/testnet is indexed only to block 4,506,233, see FEEDBACK.md) |
 | **Team** | Nikhil P N (@nikhil-pn) |
 
 ---
@@ -36,7 +36,7 @@ From their descriptions, neither matches payments to invoice codes in the memo, 
 
 You create an invoice. Hisaab gives you a `zcash:` payment link whose memo is an invoice code like `HSB-XXXXXX`. The client pays from any shielded wallet. A watch-only account (a view-only key, no spending key) sees the payment arrive, reads the memo, and marks the invoice paid after one confirmation. At year end `hisaab pack` writes a folder for your CA: a ledger for the Indian FY, one receipt per payment, and a manifest. The CA runs `hisaab verify` on any receipt to check it against the chain data, and never needs your wallet.
 
-Screenshots: see the demo video ({{VIDEO_URL}}).
+Screenshots: see the demo video (https://github.com/nikhil-pn/hisaab/blob/main/docs/hisaab-demo.mp4).
 
 ## 3. Run it in under 15 minutes
 
@@ -48,7 +48,7 @@ Screenshots: see the demo video ({{VIDEO_URL}}).
 git clone https://github.com/nikhil-pn/hisaab && cd hisaab
 node test/mock-zkool.js 8002 &     # prints example FAKE keys; MOCK, not a chain
 node bin/hisaab.js serve           # http://127.0.0.1:4040/
-npm test                           # {{TEST_COUNT}} tests, all against the mock
+npm test                           # 28 tests, all against the mock
 ```
 
 **Option B: real Zcash testnet.**
@@ -99,18 +99,19 @@ node bin/hisaab.js serve                                            # or use the
 | Step | Status | Evidence |
 |---|---|---|
 | Create invoice and ZIP 321 link | real | `hisaab invoice new` output, video |
-| Shielded testnet payment with memo | real (zkool payer wallet, public testnet) | `{{TESTNET_TXID}}`, {{TESTNET_EXPLORER}} |
+| Shielded testnet payment with memo | real (zkool payer wallet, public testnet) | `d78fd57ae683f7ac1055e4c6b8133db2e5350cce2306ae15a0ab8e5dd5ac4541`, https://testnet.zcashexplorer.app/transactions/d78fd57ae683f7ac1055e4c6b8133db2e5350cce2306ae15a0ab8e5dd5ac4541 (open in a browser; tonight zexplorer.app/testnet is indexed only to block 4,506,233, see FEEDBACK.md) |
 | Watch-only account sees it, memo matched | real | video, section 5 key |
 | Paid after 1 confirmation | real | video |
 | Ledger, CA pack, `verify` | real code, run against the same real account | video |
-| Unit and integration tests | {{TEST_COUNT}} tests, MOCK zkool server only | `npm test` |
-| Read-only proof (`No Signing Key`) | real on testnet: records the exact error from a `pay` attempt | `readonly-proof.txt` in the pack |
+| Unit and integration tests | 28 tests, MOCK zkool server only | `npm test` |
+| Read-only proof | real on testnet: zkool refused a `pay` on the watch-only account with "This account sees incoming payments only; it cannot spend" | `readonly-proof.txt` in the pack, video |
+| Second real payment (first CLI run) | real | `083854f4ed942d0658da1e9fea0d053a70daf5915bc441f391b425956958a8ea`, block 4,582,618 |
 
 **Known limitations:** the payer side is a script we run, not a real client. `verify` is only as good as the watch-only account it queries. INR rates are mainnet reference prices and are not Schedule-VDA cost basis. No bech32m checksum check on addresses (zkool makes the address itself). Data at rest is plain files (mode 600).
 
 ## 5. Privacy and trust
 
-1. **What stays private?** On-chain, sender, receiver and amount are shielded and the memo is encrypted. Hisaab never holds a spending key: it connects with a `uivktest1…` incoming-only key (a full `uviewtest1…` key is accepted, but the UIVK is the narrowest), refuses seed phrases and spending keys, and the pack records that a `pay` attempt fails with "No Signing Key".
+1. **What stays private?** On-chain, sender, receiver and amount are shielded and the memo is encrypted. Hisaab never holds a spending key: it connects with a `uivktest1…` incoming-only key (a full `uviewtest1…` key is accepted, but the UIVK is the narrowest), refuses seed phrases and spending keys, and the pack records that zkool refuses a `pay` attempt ("This account sees incoming payments only; it cannot spend").
 2. **What does the app reveal, and to whom?**
    - The light-wallet server (`testnet.zec.rocks`) sees the watcher's IP address and sync timing.
    - Hisaab stores invoice codes, descriptions, txids, amounts and memos locally in `data/` (directory 700, files 600), and nothing else. No phone number or email is collected or stored.
@@ -122,7 +123,7 @@ node bin/hisaab.js serve                                            # or use the
 3. **Who do users have to trust?** The operator of the machine running Hisaab (you); the light-wallet server for honest chain data (it can lie or withhold, it cannot read your notes); the `zkool_graphql` binary; CoinGecko if you use `--inr`; and your CA with the ledger.
 4. **What would we fix next?** (a) Route the watcher's traffic through Nym so the light-wallet server does not see an IP. (b) A narrower per-FY disclosure, so the CA gets verifiable receipts without ever being handed the key. (c) Encrypt `data/` at rest.
 
-**Viewing key (optional):** `{{UIVK}}` · birth height `{{BIRTH}}`. This is the demo freelancer wallet on testnet. It is an incoming-only key: it shows the amount and memo of what that wallet received and cannot spend.
+**Viewing key (optional):** `uivktest1hnjpqcxfupge0m0586svtg38spsyfqy5le7500lg8y8r67z5j6rr9juczs84a6cdprcrg9kyeljrvys5aqk4s7a3m20xxv9nqg2yflpqmm3cqkl2flm56peafpn3znq4vnfuyqqrwqhsdpnm4f6pgkgdazjdrk8ut2d9tzc7zzp7kgzqmr47fwcqkv7ffd832e7cr2ttr3jdzqeupw72szq8clf7ltazm2af5d2s9elj74npq46t9h9w57wgtlaug0q8642r78d3cg4300vuxkus6u7zfqx8wud4vdw2gvwnxrdfut2wzfg5wsmw6h3t3mlr5maty3gfja80fjlpwqfaardzsk` · birth height `4582613`. This is the demo freelancer wallet on testnet. It is an incoming-only key: it shows the amount and memo of what that wallet received and cannot spend.
 
 ## 6. How it's built
 
@@ -163,19 +164,19 @@ node bin/hisaab.js serve                                            # or use the
 - A Schedule-VDA-shaped INR export, with cost basis, as a CSV the CA can paste from.
 - A pilot with one CA in Kochi or Mumbai: ask whether the pack is what they would actually want. Not started; nobody has agreed yet.
 - Nym transport for the watcher, and per-FY narrower disclosure.
-- An upstream issue to zkool2 about the friction in FEEDBACK.md: {{UPSTREAM_ISSUE}}.
+- An upstream issue to zkool2 about the friction in FEEDBACK.md: drafted in docs/upstream-zkool2-issue.md (to be filed on hhanh00/zkool2).
 - **Who benefits:** Indian freelancers and shops paid in shielded ZEC, and their CAs.
 
 ## Also runs on mainnet (watch-only)
 
 This is an extra. Judging is on testnet and everything above is testnet. Testnet TAZ has no value, and we do not claim otherwise.
 
-`HISAAB_NETWORK=main` switches the key prefixes (`uivk1…`, `uview1…`) and address prefixes (`u1`, `zs1`). Mainnet is watch-only by design: no code path calls `pay` on mainnet, and the UI, ledger, receipts and pack are labelled MAINNET. A real mainnet payment was detected by the watcher: `{{MAINNET_TXID}}`.
+`HISAAB_NETWORK=main` switches the key prefixes (`uivk1…`, `uview1…`) and address prefixes (`u1`, `zs1`). Mainnet is watch-only by design: no code path calls `pay` on mainnet, and the UI, ledger, receipts and pack are labelled MAINNET. A mainnet watcher and a mainnet invoice (`HSB-E6FVT8`, 0.002 ZEC) are running; a real mainnet payment, once made, will be listed here: MAINNET_TXID_PENDING.
 
 ## 8. Links
 
 - Repo: https://github.com/nikhil-pn/hisaab
-- Demo video: {{VIDEO_URL}}
+- Demo video: https://github.com/nikhil-pn/hisaab/blob/main/docs/hisaab-demo.mp4
 - Research and evidence: `docs/research-needed.md`; implementation notes: `docs/IMPLEMENTATION_NOTES.md`
 
 ## Feedback
