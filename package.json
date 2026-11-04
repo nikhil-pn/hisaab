@@ -1,0 +1,23 @@
+{
+  "name": "hisaab",
+  "version": "0.1.0",
+  "description": "Private books for shielded ZEC: invoices in encrypted memos, viewing-key ledger for the Indian financial year, CA pack.",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "bin": { "hisaab": "bin/hisaab.js" },
+  "exports": {
+    ".": "./src/index.js",
+    "./zkool": "./src/zkool.js",
+    "./ledger": "./src/ledger.js",
+    "./invoices": "./src/invoices.js",
+    "./receipt": "./src/receipt.js",
+    "./pack": "./src/pack.js"
+  },
+  "files": ["bin", "src", "web"],
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "start": "node bin/hisaab.js serve",
+    "mock": "node test/mock-zkool.js 8002"
+  }
+}
